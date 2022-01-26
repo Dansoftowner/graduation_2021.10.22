@@ -22,11 +22,12 @@ namespace LifeOrDeath11A
 
         private void InitializeMatrix(int[,] matrix)
         {
-            for (int row = 0; row < matrix.Rank; row++)
+            var random = new Random();
+            for (int row = 0; row < RowsCount; row++)
             {
                 for (int col = 0; col < ColumnsCount; col++)
                 {
-                    matrix[row, col] = 1;
+                    matrix[row, col] = random.Next(2);
                 }
             }
             matrix[0, 0] = 0;
@@ -42,15 +43,26 @@ namespace LifeOrDeath11A
 
         public override string ToString()
         {
+            List<int> rowEdgeCases = new List<int>() { 0, RowsCount - 1 };
+            List<int> columnEdgeCases = new List<int>() { 0, ColumnsCount - 1 };
+
+            Dictionary<int, string> mappings = new Dictionary<int, string>()
+            {
+                { 0, " " },
+                { 1, "S" }
+            };
+
             StringBuilder sb = new StringBuilder();
             for (int row = 0; row < RowsCount; row++)
             {
                 for (int col = 0; col < ColumnsCount; col++)
-                {
-
-                }
+                    if (rowEdgeCases.Contains(row) || columnEdgeCases.Contains(col))
+                        sb.Append("X");
+                    else
+                        sb.Append(mappings[Matrix[row, col]]);
+                sb.AppendLine();
             }
-            return null; // TODO
+            return sb.ToString();
         }
 
     }
