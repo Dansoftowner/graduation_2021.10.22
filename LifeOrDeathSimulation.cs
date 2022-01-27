@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace LifeOrDeath11A
 {
@@ -10,13 +12,18 @@ namespace LifeOrDeath11A
         private readonly int ColumnsCount;
         private readonly int RowsCount;
 
-        private readonly int[,] Matrix;
+        private int[,] Matrix;
+
+        private List<int> rowEdgeCases;
+        private List<int> columnEdgeCases;
 
         public LifeOrDeathSimulation(int columnsCount, int rowsCount)
         {
             ColumnsCount = columnsCount;
             RowsCount = rowsCount;
             Matrix = new int[RowsCount + 2, ColumnsCount + 2];
+            rowEdgeCases = new List<int>() { 0, RowsCount - 1 };
+            columnEdgeCases = new List<int>() { 0, ColumnsCount - 1 };
             InitializeMatrix(Matrix);
         }
 
@@ -41,11 +48,87 @@ namespace LifeOrDeath11A
             Console.WriteLine(ToString());
         }
 
+        public void NextState()
+        {
+            var temp = new int[RowsCount + 2, ColumnsCount + 2];
+
+            for (int row = 1; row < RowsCount -1; row++)
+            {
+                for (int col = 1; col < ColumnsCount -1; col++)
+                {
+                    var cell = Matrix[row, col];
+
+                    var neighbours = GetNeighboursCount(row, col);
+
+                    bool dies = neighbours < 2 || neighbours > 3;
+                    bool risen = neighbours == 3;
+                    if (dies)
+                    {
+                        temp[row, col] = 0;
+                    }
+                    else if (risen && cell != 1)
+                    {
+                        temp[row, col] = 1;
+                    }
+
+
+                }
+            }
+            Matrix = temp;
+        }
+
+        public void Run()
+        {
+            
+            Print();
+            NextState();
+            Thread.Sleep(500);
+        }
+
+        private int GetNeighboursCount(int row, int col)
+        {
+            return new List<int>() {
+                GetNeighbourSafely(row, col -1), // left
+                GetNeighbourSafely(row, col + 1), // right
+                GetNeighbourSafely(row -1, col), // up
+                GetNeighbourSafely(row + 1, col), // down
+                GetNeighbourSafely(row -1, col + 1), // up right
+                GetNeighbourSafely(row -1, col - 1), // up left
+                GetNeighbourSafely(row +1, col -1), // down left
+                GetNeighbourSafely(row +1, col +1) // down right
+            }.Count(it => it == 1);
+        }
+
+        private int GetNeighbourSafely(int row, int col)
+        {
+            try
+            {
+                if (IsEdgeCase(row, col))
+                {
+                    throw new Exception();
+                }
+                return Matrix[row, col];
+            } 
+            catch(Exception)
+            {
+                return -1;
+            }
+        }
+
+        private int[,] matrixCopy()
+        {
+            var temp = new int[Matrix.GetLength(0), Matrix.GetLength(1)];
+            Array.Copy(Matrix, 0, temp, 0, Matrix.Length);
+            return temp;
+        }
+
+        private bool IsEdgeCase(int row, int col)
+        {
+            return rowEdgeCases.Contains(row) || columnEdgeCases.Contains(col);
+        }
+
         public override string ToString()
         {
-            List<int> rowEdgeCases = new List<int>() { 0, RowsCount - 1 };
-            List<int> columnEdgeCases = new List<int>() { 0, ColumnsCount - 1 };
-
             Dictionary<int, string> mappings = new Dictionary<int, string>()
             {
                 { 0, " " },
@@ -56,7 +139,7 @@ namespace LifeOrDeath11A
             for (int row = 0; row < RowsCount; row++)
             {
                 for (int col = 0; col < ColumnsCount; col++)
-                    if (rowEdgeCases.Contains(row) || columnEdgeCases.Contains(col))
+                    if (IsEdgeCase(row, col))
                         sb.Append("X");
                     else
                         sb.Append(mappings[Matrix[row, col]]);

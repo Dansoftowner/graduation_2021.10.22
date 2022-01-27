@@ -6,8 +6,12 @@ namespace LifeOrDeath11A
     {
         static void Main(string[] args)
         {
-            var lod = new LifeOrDeathSimulation(12, 12);
-            lod.Print();
+            var lod = new LifeOrDeathSimulation(10, 10);
+            while (true)
+            {
+                Console.SetCursorPosition(0, 0);
+                lod.Run();
+            }
             Console.ReadKey();
         }
     }
