@@ -17,13 +17,18 @@ namespace LifeOrDeath11A
         private List<int> rowEdgeCases;
         private List<int> columnEdgeCases;
 
-        public LifeOrDeathSimulation(int columnsCount, int rowsCount)
+        public LifeOrDeathSimulation(int columnsCount, int rowsCount, Action<int[,]> initMatrix)
         {
             ColumnsCount = columnsCount;
             RowsCount = rowsCount;
             Matrix = new int[RowsCount + 2, ColumnsCount + 2];
             rowEdgeCases = new List<int>() { 0, RowsCount - 1 };
             columnEdgeCases = new List<int>() { 0, ColumnsCount - 1 };
+            initMatrix(Matrix);
+        }
+
+        public LifeOrDeathSimulation(int columnsCount, int rowsCount) : this(columnsCount, rowsCount, m => { })
+        {
             InitializeMatrix(Matrix);
         }
 
