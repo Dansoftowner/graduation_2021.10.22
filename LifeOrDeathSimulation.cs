@@ -61,22 +61,21 @@ namespace LifeOrDeath11A
             {
                 for (int col = 1; col < ColumnsCount -1; col++)
                 {
-                    var cell = Matrix[row, col];
-
                     var neighbours = GetNeighboursCount(row, col);
-
-                    bool dies = neighbours < 2 || neighbours > 3;
-                    bool risen = neighbours == 3;
-                    if (dies)
+                    
+                    var cell = Matrix[row, col];
+                    if (cell == 1)
                     {
-                        temp[row, col] = 0;
+                        bool remains = neighbours == 2 || neighbours == 3;
+                        if (remains)
+                            temp[row, col] = 1;
                     }
-                    else if (risen && cell != 1)
+                    else
                     {
-                        temp[row, col] = 1;
+                        bool reincarnates = neighbours == 3;
+                        if (reincarnates)
+                            temp[row, col] = 1;
                     }
-
-
                 }
             }
             Matrix = temp;
