@@ -8,7 +8,6 @@ namespace LifeOrDeath11A
 {
     class LifeOrDeathSimulation
     {
-
         private readonly int ColumnsCount;
         private readonly int RowsCount;
 
@@ -22,8 +21,8 @@ namespace LifeOrDeath11A
             ColumnsCount = columnsCount;
             RowsCount = rowsCount;
             Matrix = new int[RowsCount + 2, ColumnsCount + 2];
-            rowEdgeCases = new List<int>() { 0, RowsCount - 1 };
-            columnEdgeCases = new List<int>() { 0, ColumnsCount - 1 };
+            rowEdgeCases = new List<int>() {0, RowsCount - 1};
+            columnEdgeCases = new List<int>() {0, ColumnsCount - 1};
             initMatrix(Matrix);
         }
 
@@ -57,12 +56,12 @@ namespace LifeOrDeath11A
         {
             var temp = new int[RowsCount + 2, ColumnsCount + 2];
 
-            for (int row = 1; row < RowsCount -1; row++)
+            for (int row = 1; row < RowsCount - 1; row++)
             {
-                for (int col = 1; col < ColumnsCount -1; col++)
+                for (int col = 1; col < ColumnsCount - 1; col++)
                 {
                     var neighbours = GetNeighboursCount(row, col);
-                    
+
                     var cell = Matrix[row, col];
                     if (cell == 1)
                     {
@@ -83,7 +82,6 @@ namespace LifeOrDeath11A
 
         public void Run()
         {
-            
             Print();
             NextState();
             Thread.Sleep(500);
@@ -91,7 +89,7 @@ namespace LifeOrDeath11A
 
         private int GetNeighboursCount(int row, int col)
         {
-            return new List<int>() {
+            return new List<int?>() {
                 GetNeighbourSafely(row, col -1), // left
                 GetNeighbourSafely(row, col + 1), // right
                 GetNeighbourSafely(row -1, col), // up
@@ -103,7 +101,7 @@ namespace LifeOrDeath11A
             }.Count(it => it == 1);
         }
 
-        private int GetNeighbourSafely(int row, int col)
+        private int? GetNeighbourSafely(int row, int col)
         {
             try
             {
@@ -111,19 +109,13 @@ namespace LifeOrDeath11A
                 {
                     throw new Exception();
                 }
-                return Matrix[row, col];
-            } 
-            catch(Exception)
-            {
-                return -1;
-            }
-        }
 
-        private int[,] matrixCopy()
-        {
-            var temp = new int[Matrix.GetLength(0), Matrix.GetLength(1)];
-            Array.Copy(Matrix, 0, temp, 0, Matrix.Length);
-            return temp;
+                return Matrix[row, col];
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         private bool IsEdgeCase(int row, int col)
@@ -135,8 +127,8 @@ namespace LifeOrDeath11A
         {
             Dictionary<int, string> mappings = new Dictionary<int, string>()
             {
-                { 0, " " },
-                { 1, "S" }
+                {0, " "},
+                {1, "S"}
             };
 
             StringBuilder sb = new StringBuilder();
@@ -149,8 +141,8 @@ namespace LifeOrDeath11A
                         sb.Append(mappings[Matrix[row, col]]);
                 sb.AppendLine();
             }
+
             return sb.ToString();
         }
-
     }
 }
