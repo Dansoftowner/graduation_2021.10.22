@@ -6,13 +6,7 @@ namespace LifeOrDeath11A
     {
         static void Main(string[] args)
         {
-            var lod = new LifeOrDeathSimulation(15, 10, m => {
-                m[4, 6] = 1;
-                m[5, 6] = 1;
-                m[6, 6] = 1;
-            });
-
-           
+            var lod = new LifeOrDeathSimulation(10, 10);
             while (true)
             {
                 Console.SetCursorPosition(0, 0);
